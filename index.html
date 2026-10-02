@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تبدیل متن به صدا</title>
+
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f3f5f9;--card:#fff;--text:#111827;--muted:#6b7280;--border:#dfe4ec;--blue:#3267f5;--soft:#eef3ff;--red:#e11d48;--green:#16a34a}
+body{margin:0;min-height:100vh;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.page{width:min(900px,calc(100% - 30px));margin:auto;padding:20px 0}
+.card{background:var(--card);border-radius:26px;padding:32px;box-shadow:0 20px 60px rgba(15,23,42,.08)}
+header{text-align:center;padding:5px 0 20px}
+header small{color:var(--blue);font-weight:bold;letter-spacing:3px;direction:ltr;display:block}
+header h1{font-size:34px;margin:12px 0}
+header p,.title p{color:var(--muted);margin:0;line-height:1.8;font-size:13px}
+.section{border-top:1px solid var(--border);padding-top:22px;margin-top:18px}
+.title{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.number{width:36px;height:36px;border-radius:11px;background:var(--soft);color:var(--blue);display:grid;place-items:center;font-weight:bold}
+.title h2{font-size:17px;margin:0 0 3px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{border:2px solid var(--border);background:white;border-radius:16px;min-height:78px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:14px;transition:.2s}
+.option:hover{transform:translateY(-2px)}
+.option.selected{border-color:var(--blue);background:var(--soft);box-shadow:0 0 0 3px rgba(50,103,245,.08)}
+.option strong,.option small{display:block}
+.option small{color:var(--muted);margin-top:4px;direction:ltr}
+.flag,.gender{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.uk{font-size:43px;background:white}
+.iran{display:flex;flex-direction:column}
+.iran span{width:100%;height:33.333%}
+.iran span:nth-child(1){background:#239f40}
+.iran span:nth-child(2){background:#fff}
+.iran span:nth-child(3){background:#da0000}
+.gender{background:#f1f5f9;font-size:25px}
+textarea{width:100%;min-height:150px;border:2px solid var(--border);border-radius:16px;padding:16px;resize:vertical;outline:none;font:inherit;line-height:1.9;background:#fbfcff}
+textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(50,103,245,.08)}
+.counter{direction:ltr;text-align:left;color:var(--muted);font-size:11px;margin-top:7px}
+#generate{width:100%;height:54px;border:0;border-radius:14px;background:var(--blue);color:#fff;font-weight:bold;cursor:pointer;margin-top:20px;box-shadow:0 10px 25px rgba(50,103,245,.25)}
+#generate:disabled{opacity:.65;cursor:wait}
+#status{text-align:center;min-height:22px;margin-top:12px;color:var(--muted);font-size:13px}
+#status.error{color:var(--red)}
+#result{margin-top:20px;border:1px solid var(--border);background:#f8faff;border-radius:17px;padding:18px}
+.result-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.ready{display:flex;align-items:center;gap:9px}
+.dot{width:10px;height:10px;background:var(--green);border-radius:50%}
+.filename{direction:ltr;color:var(--muted);font-size:12px}
+audio{width:100%}
+#download{height:50px;background:#111827;color:#fff;text-decoration:none;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-top:13px;font-weight:bold}
+.hidden{display:none}
+@media(max-width:600px){.card{padding:22px 15px}.options{grid-template-columns:1fr}header h1{font-size:27px}}
+</style>
+</head>
+
+<body>
+<main class="page">
+<div class="card">
+
+<header>
+<small>TEXT TO SPEECH</small>
+<h1>تبدیل متن به صدا</h1>
+<p>زبان و نوع صدا را انتخاب کن، متن موردنظرت را بنویس و فایل صوتی بساز.</p>
+</header>
+
+<section class="section">
+<div class="title">
+<div class="number">1</div>
+<div><h2>زبان</h2><p>زبان متن را انتخاب کن.</p></div>
+</div>
+
+<div class="options">
+<button class="option selected" data-group="language" data-value="fa">
+<div class="flag iran"><span></span><span></span><span></span></div>
+<div><strong>فارسی</strong><small>Persian</small></div>
+</button>
+
+<button class="option" data-group="language" data-value="en">
+<div class="flag uk">🇬🇧</div>
+<div><strong>انگلیسی</strong><small>English</small></div>
+</button>
+</div>
+</section>
+
+<section class="section">
+<div class="title">
+<div class="number">2</div>
+<div><h2>نوع صدا</h2><p>صدای مرد یا زن را انتخاب کن.</p></div>
+</div>
+
+<div class="options">
+<button class="option selected" data-group="gender" data-value="male">
+<div class="gender">♂</div>
+<div><strong>مرد</strong><small>Male Voice</small></div>
+</button>
+
+<button class="option" data-group="gender" data-value="female">
+<div class="gender">♀</div>
+<div><strong>زن</strong><small>Female Voice</small></div>
+</button>
+</div>
+</section>
+
+<section class="section">
+<div class="title">
+<div class="number">3</div>
+<div><h2>متن</h2><p>متنی که می‌خواهی خوانده شود را بنویس.</p></div>
+</div>
+
+<textarea id="text" maxlength="5000" placeholder="مثلاً: سلام، به سایت تبدیل متن به صدا خوش آمدید."></textarea>
+<div class="counter" id="counter">0 / 5000</div>
+</section>
+
+<button id="generate">ساخت صدا</button>
+<div id="status"></div>
+
+<section id="result" class="hidden">
+<div class="result-head">
+<div class="ready"><div class="dot"></div><strong>صدای شما آماده است</strong></div>
+<div class="filename">voice.mp3</div>
+</div>
+
+<audio id="audio" controls></audio>
+<a id="download" href="/download" download="voice.mp3">دانلود فایل MP3</a>
+</section>
+
+</div>
+</main>
+
+<script>
+const state={language:"fa",gender:"male"};
+
+const textInput=document.getElementById("text");
+const counter=document.getElementById("counter");
+const generateButton=document.getElementById("generate");
+const statusBox=document.getElementById("status");
+const result=document.getElementById("result");
+const audio=document.getElementById("audio");
+const download=document.getElementById("download");
+
+document.querySelectorAll(".option").forEach(button=>{
+    button.addEventListener("click",function(){
+        const group=this.dataset.group;
+        const value=this.dataset.value;
+        state[group]=value;
+
+        document.querySelectorAll(`[data-group="${group}"]`).forEach(item=>{
+            item.classList.remove("selected");
+        });
+
+        this.classList.add("selected");
+    });
+});
+
+textInput.addEventListener("input",function(){
+    counter.textContent=`${this.value.length} / 5000`;
+});
+
+generateButton.addEventListener("click",async function(){
+    const text=textInput.value.trim();
+
+    if(!text){
+        statusBox.textContent="لطفاً یک متن وارد کن.";
+        statusBox.className="error";
+        textInput.focus();
+        return;
+    }
+
+    generateButton.disabled=true;
+    generateButton.textContent="در حال ساخت صدا...";
+    statusBox.className="";
+    statusBox.textContent="لطفاً کمی صبر کن...";
+    result.classList.add("hidden");
+
+    try{
+        const response=await fetch("/generate",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                text:text,
+                language:state.language,
+                gender:state.gender
+            })
+        });
+
+        const data=await response.json();
+
+        if(!response.ok){
+            throw new Error(data.details || data.error || "خطایی رخ داد.");
+        }
+
+        const version=Date.now();
+
+        audio.src=`${data.audio_url}?v=${version}`;
+        download.href=`${data.download_url}?v=${version}`;
+
+        audio.load();
+        result.classList.remove("hidden");
+        statusBox.textContent="فایل voice.mp3 با موفقیت ساخته شد.";
+    }
+    catch(error){
+        statusBox.className="error";
+        statusBox.textContent="خطا: "+error.message;
+    }
+    finally{
+        generateButton.disabled=false;
+        generateButton.textContent="ساخت صدا";
+    }
+});
+</script>
+
+</body>
+</html>
