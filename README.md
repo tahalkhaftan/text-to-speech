@@ -1,4 +1,4 @@
-# Text-to-Speech Web App
+# Text-to-Speech
 
 یک پروژه‌ی ساده‌ی **تبدیل متن به صدا (Text-to-Speech)** با استفاده از
 Python، Flask و Edge TTS.
